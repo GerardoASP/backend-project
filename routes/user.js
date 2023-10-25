@@ -14,4 +14,7 @@ router.delete("/:id", userController.removeUser);
 /* http://localhost:3000/api/v1/users/update-user/1 */
 router.put("/update-user/:id", userController.updateUser);
 
+/* http://localhost:3000/api/v1/users/1 */
+router.get("/:id", userController.getUser);
+
 module.exports = router;

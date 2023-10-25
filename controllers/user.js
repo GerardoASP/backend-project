@@ -30,6 +30,21 @@ const getUsers = async (req, res)=>{
     }
 }
 
+/*Obtener un usuario en especifico */
+const getUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+      const user = await modelUser.findById(id);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json(user);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+}
+
 /*Actualizar un usuario */
 const updateUser = async (req,res)=>{
   const { id } = req.params;
@@ -58,5 +73,6 @@ module.exports = {
   createUser,
   getUsers,
   updateUser,
-  removeUser
+  removeUser,
+  getUser
 }
