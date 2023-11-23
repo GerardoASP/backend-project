@@ -54,20 +54,24 @@ const updateUser = async (req,res)=>{
     res.status(200).send(user);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(400).send(error);
   }
 }
 
 /*Eliminar un usuario en especifico */
 const removeUser = async(req, res)=>{
-  const {id} = req.params;
   try{
+      const {id} = req.params;
       const userDelete = await modelUser.findByIdAndDelete(id)
+      if(userDelete === null) {
+          return res.status(404).json({message: "User not found"});
+      }
       res.status(204).json();
   }catch(error){
-      res.status(500).json({message: error.message});
+      res.status(400).json({message: error.message});
   }
 }
+
 
 module.exports = {
   createUser,

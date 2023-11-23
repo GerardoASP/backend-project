@@ -6,14 +6,15 @@ const jwt = require("../utils/jwt");
 const register = async (req, res) => {
     const { 
             firstname, 
-            lastnanme, 
-            email, 
+            lastname, 
+            email:email, 
             password, 
             country, 
             department, 
             municipality, 
             document_type, 
-            document
+            document,
+            rol
         } = req.body;
 
     if (!email) return res.status(400).send({ msg: "El email es requerido "});
@@ -27,7 +28,7 @@ const register = async (req, res) => {
 
     const user = new User({
         firstname,
-        lastnanme,
+        lastname,
         country,
         department,
         municipality,
@@ -35,7 +36,7 @@ const register = async (req, res) => {
         document,
         email: email.toLowerCase(),
         password: hashPassword,
-        role: "guess",
+        rol,
         active: false
     });
 
@@ -43,7 +44,7 @@ const register = async (req, res) => {
         const userStorage = await user.save();
         res.status(201).send(userStorage);
     } catch (error) {
-        res.status(400).send({ msg: "Error al crear el usuario" + error});
+        res.status(400).send({ msg: "Error al crear el usuario", error: error.message || "Error desconocido" });
     }
 };
 
@@ -72,6 +73,7 @@ const login = async (req, res) => {
         res.status(200).send({
             access: jwt.createAccessToken(userStore),
             refresh: jwt.createRefreshToken(userStore),
+            rol: userStore.rol,
         })
     } catch (error) {
         res.status(400).send({ msg: error.message });
@@ -84,7 +86,7 @@ async function refreshAccessToken(req, res){
         return res.status(401).send({ msg: "Token requerido"});
     }
     try {
-        const { user_id } = jwt.decoded(token);
+        const { user_id} = jwt.decoded(token);
         const userStorage = await User.findOne({_id: user_id});
         if (!userStorage) {
             return res.status(404).send({ msg: "Usuario no encontrado" });
