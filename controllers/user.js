@@ -44,7 +44,21 @@ const getUser = async (req, res) => {
       res.status(500).json({ message: error.message });
   }
 }
-
+/*Obtener un usuario en especifico por el email */
+const getUserByEmail = async (req, res) => {
+  const email = req.params.email;
+ 
+  try {
+     const user = await modelUser.findOne({ email: email });
+     if (!user) {
+         return res.status(404).json({ message: 'User not found' });
+     }
+     res.status(200).json(user);
+  } catch (error) {
+     res.status(500).json({ message: error.message });
+  }
+ }
+ 
 /*Actualizar un usuario */
 const updateUser = async (req,res)=>{
   const { id } = req.params;
@@ -78,5 +92,6 @@ module.exports = {
   getUsers,
   updateUser,
   removeUser,
-  getUser
+  getUser,
+  getUserByEmail
 }
