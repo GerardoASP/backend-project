@@ -28,6 +28,32 @@ const getProducts = async (req, res)=>{
     }
 }
 
+/* Listar todos los productos que tengan un cierto estado*/
+const getProductsByState = async (req, res) => {
+    try {
+        // Obtén el estado de los parámetros de la URL
+        const { state } = req.params;
+
+        // Verifica si se proporciona un estado en los parámetros de la URL
+        if (!state) {
+            return res.status(400).json({ message: 'Por favor, proporciona un estado válido en los parámetros de la URL.' });
+        }
+
+        // Busca los productos que coincidan con el estado
+        const products = await modelProduct.find({ state });
+
+        // Verifica si se encontraron productos
+        if (products.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron productos para el estado proporcionado.' });
+        }
+
+        // Devuelve los productos encontrados
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 /*Obtener un producto en especifico */
 const getProduct = async (req, res) => {
     const id = req.params.id;
@@ -76,5 +102,6 @@ const removeProduct = async(req, res)=>{
     getProduct,
     getProducts,
     updateProduct,
-    removeProduct
+    removeProduct,
+    getProductsByState
   }

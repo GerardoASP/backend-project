@@ -17,6 +17,7 @@ router.delete("/:id", productController.removeProduct);
 /* http://localhost:3000/api/v1/products/update-user/1 */
 router.put("/update-product/:id", productController.updateProduct);
 
-
+/* http://localhost:3000/api/v1/products/state/In_Stock */
+router.get("/state/:state",productController.getProductsByState)
 
 module.exports = router;
